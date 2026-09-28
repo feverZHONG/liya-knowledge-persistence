@@ -18,7 +18,7 @@ tier: T2  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 | `角色资料库` | 纯数据本体（characters/story/setting/sources 129份）+ references 索引 |
 | `internet-memes-reference` | 分类目录（memes/流行梗|语言陷阱|技术梗）+ 导视表 + 模板 `_template.md` |
 | `gbf-relink` | references/skill-data/ 几十个因子数据 md，按名检索 |
-| `（私档）-crusaders` | 全系列档案 |
+| `某同人系列` | 全系列档案 |
 | `某连载 skill` | 已发布稿件 P0/P1 拆分 |
 
 ## 为什么用 skill 而不是普通文件
