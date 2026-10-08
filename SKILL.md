@@ -112,6 +112,7 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
 
 | 模式/场景 | 规范在哪 |
 |:---------|:---------|
+| 记忆腾位置（逐条字数／合并候选／余量） | `bin/mem`（本 skill 的 `scripts/mem.py`，只读） |
 | 归档目录（同类数据按时间累积） | `references/archive-pattern.md` |
 | 实体档案「一 id 一文件」 | `references/entity-archive-pattern.md`（index.json + 每实体一文件） |
 | 生活健康类观察归档 | `<记忆目录>/health-notes.md` + `references/health-verification.md` |
