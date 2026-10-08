@@ -26,8 +26,25 @@ import re
 import sys
 import unicodedata
 
-CONFIG = "/opt/data/config.yaml"
-MEM_DIR = "/opt/data/memories"
+def _default_root():
+    """数据根探测：$HERMES_ROOT ＞ 脚本上溯三层（<root>/skills/<skill>/scripts/）＞
+    ~/.hermes ＞ 家目录本身——命中判据是该层下存在 memories/ 目录。"""
+    env = os.environ.get("HERMES_ROOT")
+    if env:
+        return env
+    here = os.path.dirname(os.path.abspath(__file__))
+    cands = [os.path.abspath(os.path.join(here, "..", "..", "..")),
+             os.path.expanduser("~/.hermes"),
+             os.path.expanduser("~")]
+    for cand in cands:
+        if os.path.isdir(os.path.join(cand, "memories")):
+            return cand
+    return os.path.expanduser("~/.hermes")
+
+
+ROOT = _default_root()
+CONFIG = os.path.join(ROOT, "config.yaml")
+MEM_DIR = os.path.join(ROOT, "memories")
 FILES = {"memory": "MEMORY.md", "user": "USER.md"}
 DEFAULT_LIMITS = {"memory": 2200, "user": 1375}
 SEP = "\n§\n"
@@ -107,7 +124,13 @@ def main():
     ap.add_argument("--find", metavar="词", help="搜条目")
     ap.add_argument("--min-sim", type=float, default=0.30)
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--root", metavar="目录",
+                    help="Hermes 数据根（默认取 $HERMES_ROOT，或自动探测 ~/.hermes / 家目录）")
     args = ap.parse_args()
+    if args.root:
+        global CONFIG, MEM_DIR
+        CONFIG = os.path.join(os.path.abspath(args.root), "config.yaml")
+        MEM_DIR = os.path.join(os.path.abspath(args.root), "memories")
 
     path, text, items = load(args.who)
     lim = limits()[args.who]
