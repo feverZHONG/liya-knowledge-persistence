@@ -59,7 +59,7 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
     - ↳ C20e 走批量 operations
     - ↳ C20f 防回胖：末尾留元规则
 
-21. **会话史溯源＝直查 state.db，不信 FTS 空结果** — `LIKE` 独特字串＋两段片段 0 命中＋**必报覆盖窗口**；空结果≠没有｜详录 `session-history-verification.md`
+21. **会话史溯源＝直查 state.db，不信 FTS 空结果** — `LIKE` 独特字串＋两段片段 0 命中＋**必报覆盖窗口**；空结果≠没有｜详录 `references/session-history-verification.md`
     - ↳ D21b ⚠️ `LIKE` 前先收窄（超时伪装成「没有」）
 
 22. **日记收尾三件＋工具体检边界** — 正文落盘／INDEX 顶部倒序插一行／`git add` 只加这两个文件｜E22
@@ -68,7 +68,8 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
 
 24. **登记类 CLI 的参数陷阱＋登记配方** — `ro add --sources` 只用 `|` 分隔不传换行；中文参数走 `subprocess.run([...])`｜E24
 
-25. **素材归位：一件东西一「家」** — 混合体裁先拆／只放一「家」，他处只挂链／专属归作品库、通用只留指针｜A25
+25. **素材归位：一件东西一「家」** — 混合体裁先拆／只放一「家」，他处只挂链／专属归作品库、通用只留指针；**另存/分离时先判旧处那份是「副本」还是「另一件东西」**——是本轮的过程记录与判词就**留**（删了断下游引用），只加一行指针改道｜A25
+    - ↳ A25b **另存件只装另存物**：用户说「筛出 X，另外存放」＝产物只含 X 本身（顶多加一行来源）；接口元数据、核对结论、抓取脚本指针**另置**（机读版／汇报里说）——把这一堆塞回同一份，等于筛完又糊成一坨档案，用户会退回来重做
 
 26. **档案中性化：不写宿主环境细节** — 不写东西跑在谁的什么设备上，改完 grep 全库同词｜D26
 
@@ -104,6 +105,18 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
     - ↳ **动笔前先搜同一规则**：已有就改那句误导的原文（加强、补例外），不追加第二份表述｜A32b
     - ↳ **一次加料顺手压一次**：把当时加的那几段压成短句，比事后整篇瘦身便宜；存量厚 SKILL.md 另走减法流程（拆薄工具在 `skill-curation`）｜A32c
 
+33. **数据快照：重取，不转录** — 要另存一份「当前状态」类产物（题库／清单／接口返回／站点快照）时，**别从既有档案里抄**：照抄＝连旧档的错一起继承，还看不出上游已变。做法：现场重取全量 → 与旧档**逐条 diff 并报一致率**（不一致处就是上游变动或旧档笔误）→ 产物记来源＋时间＋ **sha256**，下次复测比 hash 就能判定有没有动。
+
+34. **宣布「全部落地」前逐层各核一次** — 日记／skill 条目／档案／提交是四条不同的落点，各有各的写手（收稿 cron 会在当晚某刻先把当天收笔，之后的事只走补记；手写补记又不顺带写 skill）。**「我刚写过」不是判据，文件里有才是**：宣告前按类各跑一次 `grep -n "<硬标识符>" <目标文件>`（卡片 id／commit 短号／编号／专名，别用「这事」这种只有自己看得懂的词），一类一条，别把几样打包成一句汇报。核出缺口当场补：追加不覆盖、INDEX 时间改成新署名时刻、只 `git add` 这几个文件；汇报时把「早先落的」和「刚补的」分开说——把自己上一句「已落地」直接咽下去，下一轮更查不出来。
+    - ↳ **第五条落点：自己的那一层**——日记／档案／skill 都写完不等于收工：这段里有没有关于**自己**的定位、被说过的一句话、哪条底线被校准过？有就同时落 `memory`（一句短句）或 `SOUL.md` 的「给自己的话」（一条一行）；没有不写。判据是「换个会话还会不会用到」，不是「有没有内容」。用户主动提一句「你自己这里也要写」＝这类事默认漏了｜D34b
+35. **知识库先定「拆」，再定「载体」** — 用户问「用 skill 还是改造成 md」时，答案不是二选一：**skill＝门牌（触发与路由）、md＝仓库（资料本体）、CLI＝检索口**。skill 的索引常驻，每加一个都在吃上下文预算、内容一改还得改 skill；md 能随便长与分目录，但没人告诉它家里有这份，就等于没有。拆分判据：
+    - ↳ **按「被问的方式」拆，不按分类学拆**：一档的边界＝「一次提问会一起需要的那堆东西」（问某代作品就连剧情／角色／势力同档），横切成「剧情.md／角色.md／势力.md」是最常见的错。
+    - ↳ **稳定与流动分家**：不随时间变的（设定／剧情／年表）与天天变的（动态／台账／价格）分两处，否则频繁更新会把稳定的反复搅动。
+    - ↳ **一主体一档 ＋ 共通层独立**：跨主体共用的（世界观／组织／术语）单开一层，两边互链不复制；粒度看到「一次能不能读完」，超了照被问入口再切一刀。
+    - ↳ **来源分层**：官方原文／整理稿／社区考据分开放，判可信度时一眼看得出档次；每档头写一句「这档回答什么问题」，是最便宜的边界声明。
+    - ↳ **验收**：抽十道真被问过的题，两步之内能不能定位到档；要跨五档才拼得出答案＝切错了。**别按文件类型拆**——那是存储视角，不是使用视角。
+    - ↳ 载体取舍只看一条：这类内容是不是**每次都要整段读**？会→skill 里只留路由；不会→md 加检索（CLI 一条命令吐正文；结构化数据用 json／tsv 存，CLI 渲染成人看的）。
+
 ## 决策记录（拍板）规范
 
 拍板/决策类记录落盘：**原话不加解读**、**必记「否掉了什么」**（方案+落选原因）、**被取代用新记录**；骨架 `## 拍板（原话）`／`## 否掉了什么（方案+原因）`／`## 影响/后果`；**归档冻结**｜详案 D1–D5
@@ -118,8 +131,9 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
 | 生活健康类观察归档 | `<记忆目录>/health-notes.md` + `references/health-verification.md` |
 | 私人笔记/压缩包素材归档 | `references/private-note-archive.md` |
 | 事件类双轨/三处落笔归档 | `references/event-dual-track.md`（完整档案+轻量条目+当日日记三处落笔，后续补充法） |
+| 长案卷分层（一案一档：判词/过程账/证件/取证/第三方核查） | `references/case-archive-layout.md` |
 | 目录纳入 git 前扫敏感信息 | 见下「敏感信息」节（凭据只走 .enc 不入库） |
-| 知识库型 Skill | `references/knowledge-base-skill.md`（SKILL.md 导视 + 数据分类目录 + 防膨胀内建） |
+| 知识库型 Skill（含**载体能力与边界实测**：linked_files 规格／别放 assets／60 阈值／CLI 耦合） | `references/knowledge-base-skill.md`（SKILL.md 导视 + 数据分类目录 + 防膨胀内建） |
 | 旧时代/RAG遗留文件识别与处置（2026-09-05 双生实战） | `references/legacy-file-recognition.md`（胎记识别 + 母本不扔 + 原料成品并存） |
 | 导视表拆独立 INDEX.md（2026-08-31 实战） | 见下「导视拆 INDEX」节 |
 | 踩坑全录（20 条，用到才读） | `references/pitfalls.md` |
@@ -131,7 +145,7 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
 
 ## 导视拆 INDEX（2026-08-31 internet-memes-reference 实战）
 
-知识库型 skill 的导视表是最大重复块 → **拆到 skill 根独立 `INDEX.md`**（依赖分析→建 INDEX.md→SKILL.md 换一行指引→全库引用同步→实测验证）；**装饰 emoji 端走**（用户拍板）｜详案 K1
+知识库型 skill 的导视表是最大重复块 → **拆到 skill 根独立 「INDEX.md」**（依赖分析→建 INDEX.md→SKILL.md 换一行指引→全库引用同步→实测验证）；**装饰 emoji 端走**（用户拍板）｜详案 K1
 
 ## 参考资料
 
@@ -140,14 +154,15 @@ description: 信息持久化规范——区分 memory/文件/skill 三层存储�
 | `references/pitfalls.md` | 踩坑全录 20 条（根目录死文件/收录要全量/一id一文件/workspace散货/委派收尾三查/gitignore 误伤等） |
 | `references/qq-forwarded-messages.md` | QQ 转发消息事件调查（GitHub API 第一手核实） |
 | `references/docx-metadata-forensics.md` | docx 作者归属验证（creator/修订痕迹/时间线取证） |
-| `references/archive-pattern.md` / `entity-archive-pattern.md` / `health-verification.md` / `private-note-archive.md` / `knowledge-base-skill.md` | 各归档/知识库模式详规 |
+| `references/archive-pattern.md` / `references/entity-archive-pattern.md` / `references/health-verification.md` / `references/private-note-archive.md` / `references/knowledge-base-skill.md` | 各归档/知识库模式详规 |
 | `references/session-history-verification.md` | 会话史溯源（state.db 直查／覆盖窗口／空结果≠不存在） |
 
 ## 登记口径 · 做被要求的事，产出即时落档
 
 - 登记**只做被要求的事**——用户没点名的不自作主张建条（小事别抢着存档）。
 - 但**任务内的产出要即时落档，别问「要不要留」**：问了＝把判断推回给用户。该不该留按本 skill 的归位规则自己判，判完直接写。
+- **「这个应该能更新本地的档案」＝先找同主题的既有长期档，不是只建一条事件条目**：`grep -ril <关键词> <记忆目录> <档案目录> skills/*/references` 摧机制笔记／本机账／技术速查——新事实按「新增一节」补进去（旧结论不改），同时改 `INDEX.md` 那行的描述；事件条目与日记照旧。判据：只写轻量条目＝那份长期档还是缺的，用户下次会再指一遍同一个缺口｜详 `references/event-dual-track.md`「主题档优先」
 
 ## 拆分记录
 
-> 2026-09-22 拆薄（规矩留、案例搬，**一条未删**，原文逐字进 references）：31.6KB → 9.5KB。A5–A28→`routing-cases.md`；B14→`feedback-and-persistence.md`；C20→`memory-debloat.md`；D18–D27＋决策记录规范→`record-integrity.md`；E15–E24→`daily-log-and-registration.md`；F29→`corpus-slimming.md`；G30→`interpreting-user-work.md`；D21b→并入 `session-history-verification.md`；导视拆 INDEX 节→并入 `knowledge-base-skill.md`。
+> 2026-09-22 拆薄（规矩留、案例搬，**一条未删**，原文逐字进 references）：31.6KB → 9.5KB。A5–A28→`references/routing-cases.md`；B14→`references/feedback-and-persistence.md`；C20→`references/memory-debloat.md`；D18–D27＋决策记录规范→`references/record-integrity.md`；E15–E24→`references/daily-log-and-registration.md`；F29→`references/corpus-slimming.md`；G30→`references/interpreting-user-work.md`；D21b→并入 `references/session-history-verification.md`；导视拆 INDEX 节→并入 `references/knowledge-base-skill.md`。

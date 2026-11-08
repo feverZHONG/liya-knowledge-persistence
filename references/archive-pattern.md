@@ -61,7 +61,7 @@ data-archive/
 
 ## 适用场景
 
-- 公众号文章存档（`wechat-article` skill 实现）
+- 公众号文章存档（`platform-content-extraction` 的 `scripts/wx_archive.py` 实现）
 - B 站专栏/视频信息备份
 - 每日新闻简报归档
 - 任何需要「存了还能翻出来」的数据积累
