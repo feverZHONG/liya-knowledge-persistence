@@ -10,7 +10,7 @@ tier: T2  # 随 knowledge-persistence 主 skill
 
 ### C20 · memory 减法：先验尸再删（2026-09-10 记忆舱贴顶实战）
 
-20. **memory 减法：先验尸再删（2026-09-10 记忆舱贴顶实战）** — memory 贴上限（MEMORY 2198/2200、USER 1353/1375，两个都 99%）时做减法。铁律：**每条要下沉的事实先在对应 skill 里 grep 验尸，验到才删**；skill 里没有的**先补进 skill 再删 memory**（实例：「合集总数=全量48 不是活动36」只在 memory 里，先写进 `角色资料库/01-剧情合集-CLI.md` 才删）。顺带三查：① **数字可能过期**——memory 写「语录母库 108 条」，skill 实际 105 条 → 删数字比改数字干净；② 删的是**纯流程/CLI 子命令/文件路径**，留的是**铁律·路由·敏感项**（口诀：memory 留「什么时候走哪个 skill」，skill 留「怎么走」）；③ 腾出的空间用来加当日教训。实测一次减法 MEMORY 2198→1910（86%）、USER 1353→1201（87%），能腾 10-15%。注：`memories/` 被 gitignore（不进仓库，另有每日备份 cron），所以减法本身没什么好提交的。
+20. **memory 减法：先验尸再删（2026-09-10 记忆舱贴顶实战）** — memory 贴上限（MEMORY 2198/2200、USER 1353/1375，两个都 99%）时做减法。铁律：**每条要下沉的事实先在对应 skill 里 grep 验尸，验到才删**；skill 里没有的**先补进 skill 再删 memory**（实例：「合集总数=全量48 不是活动36」只在 memory 里，先写进 `skills/twin-vision-archive/references/01-剧情合集-CLI.md` 才删）。顺带三查：① **数字可能过期**——memory 写「语录母库 108 条」，skill 实际 105 条 → 删数字比改数字干净；② 删的是**纯流程/CLI 子命令/文件路径**，留的是**铁律·路由·敏感项**（口诀：memory 留「什么时候走哪个 skill」，skill 留「怎么走」）；③ 腾出的空间用来加当日教训。实测一次减法 MEMORY 2198→1910（86%）、USER 1353→1201（87%），能腾 10-15%。注：`memories/` 被 gitignore（不进仓库，另有每日备份 cron），所以减法本身没什么好提交的。
 
 
 ### C20a · 动手前先备份
@@ -36,6 +36,8 @@ tier: T2  # 随 knowledge-persistence 主 skill
 ### C20e · 改 memory 走 memory 工具的批量 operations
 
 - **改 memory 走 memory 工具的批量 operations**（一次原子提交），别直接改文件；保留条目的改写用 `replace`，别 remove + add 造出第二条。
+- **批量里 remove 与 replace 会互相踩，顺序有讲究**：`old_text` 是**子串匹配**，若先用 `replace` 把待删条目的句子写进了新文本，后面那一步 `remove` 就会命中两处，整批报「matched multiple entries」被拒（batch 全或无，一条都不落）。正确顺序是**先 remove 原条目，再做 replace／合并**；定位串用原条目独有的长句，别用新写的短语。
+- **合并后必验内容守恒**：合并条目写完，把新旧条目都打印出来逐项核对（路径／判据／例外一个不漏），别只看字符数下降——省下的字好看，丢掉的条件没人会再提。
 
 
 ### C20f · 防回胖
